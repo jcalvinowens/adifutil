@@ -1,0 +1,92 @@
+adifutil: ADIF data swiss army knife
+====================================
+
+This is a quick and dirty command line utility for working with records in the
+Amateur Data Interchange Format [1]. It was more or less exclusively tested
+against data from WSJTX [2]. It has no external dependencies.
+
+The primary use is "merging" ADIF files with confirmations downloaded from a
+system like TQSL with your local data. The code is also extensible:
+hamwebutil.py is a very ugly example which generates a website listing your QSOs
+from ADIF files, used to make [3].
+
+Examples
+--------
+
+By default, it lists the fields present in the set of provided files:
+
+	{0}[calvin ~] ./adifutil.py list boulder.adi
+                        azdegs: 9/9 (100.000%)
+                        azrads: 9/9 (100.000%)
+                          band: 9/9 (100.000%)
+                          call: 9/9 (100.000%)
+                      cardinal: 9/9 (100.000%)
+                       dateoff: 9/9 (100.000%)
+                        dateon: 9/9 (100.000%)
+                          dist: 9/9 (100.000%)
+                           eor: 9/9 (100.000%)
+                      epochoff: 9/9 (100.000%)
+                       epochon: 9/9 (100.000%)
+                          freq: 9/9 (100.000%)
+                    gridsquare: 9/9 (100.000%)
+                          mode: 9/9 (100.000%)
+                 my_gridsquare: 9/9 (100.000%)
+                      qsl_rcvd: 9/9 (100.000%)
+                      qso_date: 9/9 (100.000%)
+                  qso_date_off: 9/9 (100.000%)
+                      rst_rcvd: 9/9 (100.000%)
+                      rst_sent: 9/9 (100.000%)
+              station_callsign: 9/9 (100.000%)
+                      time_off: 9/9 (100.000%)
+                       time_on: 9/9 (100.000%)
+                        tx_pwr: 9/9 (100.000%)
+
+You can extract any particular fields you need:
+
+	{0}[calvinow ~] ./adifutil.py list -F call dateon mode gridsquare dist cardinal boulder.adi
+	 W6GRH 2022-08-17 22:29:00+00:00 FT8 DM14 738  SW
+	 W7WIA 2022-08-17 23:12:15+00:00 FT8 DM42 599 SSW
+	KG5ZAY 2022-08-17 23:13:30+00:00 FT8 EM23 726 ESE
+	 N9FXR 2022-08-17 23:16:15+00:00 FT8 EN61 968 ENE
+	WA6EJW 2022-08-17 23:59:00+00:00 FT8 CM94 933 WSW
+	 N0DOW 2022-08-18 00:06:15+00:00 FT8 EN26 693  NE
+	KG5HTH 2022-08-18 18:35:15+00:00 FT8 EM02 624  SE
+	KD6KHJ 2022-08-18 18:40:15+00:00 FT8 DM03 871  SW
+	KA9FOX 2022-08-18 19:10:45+00:00 FT8 EN43 782  NE
+
+You can also export the combined data as ADIF or JSON:
+
+	{0}[calvin ~] ./adifutil.py export -F json boulder.adi
+	  {
+	    "call": "W6GRH",
+	    "gridsquare": "DM14",
+	    "mode": "FT8",
+	    "rst_sent": -5,
+	    "rst_rcvd": -10,
+	    "qso_date": "20220817",
+	    "time_on": "222900",
+	    "qso_date_off": "20220817",
+	    "time_off": "222956",
+	    "band": 20,
+	    "freq": 14.074596,
+	    "station_callsign": "W5CAL",
+	    "my_gridsquare": "DM79IX",
+	    "tx_pwr": "1",
+	    "eor": null,
+	    "qsl_rcvd": false,
+	    "dist": 738,
+	    "azdegs": 243,
+	    "azrads": -2.0389121203620144,
+	    "cardinal": "SW",
+	    "dateon": "2022-08-17 22:29:00+00:00",
+	    "epochon": 1660775340.0,
+	    "dateoff": "2022-08-17 22:29:56+00:00",
+	    "epochoff": 1660775396.0
+	  },
+
+The tool adds several useful fields to the data it exports, including
+distance/azimuth and parsed time fields.
+
+[1] https://www.adif.org/
+[2] https://wsjt.sourceforge.io/wsjtx.html
+[3] https://jcalvinowens.com/radio/old/

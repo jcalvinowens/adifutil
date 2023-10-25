@@ -331,7 +331,6 @@ def do_export(args):
 
 def parse_arguments():
 	parser = argparse.ArgumentParser()
-	parser.add_argument("files", type=str, nargs="+")
 	subs = parser.add_subparsers(dest="action")
 
 	listcmd = subs.add_parser("list")
@@ -346,6 +345,7 @@ def parse_arguments():
 	expcmd = expcmd.add_argument("-F", dest="format", default="adif",
 				     choices=["adif", "json"])
 
+	parser.add_argument("files", type=str, nargs="+")
 	return parser.parse_args()
 
 def main():
